@@ -34,11 +34,7 @@ client.on('message', (channel, userstate, message, self) => {
 
   // Hello Message
   if (message.toLowerCase() === '!whittlebot') {
-    //let mod = false;
-    //mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
-    //if (mod) {
     client.say(channel, `/me I hate you.`);
-    //}
   }
 
   //------------------------------------------------------------------------------------------
@@ -60,6 +56,16 @@ client.on('message', (channel, userstate, message, self) => {
 
   //------------------------------------------------------------------------------------------
 
+  // Catssnap
+  if (message.toLowerCase() === '!catssnap') {
+    if (userstate.username === 'catssnap') {
+      client.say(channel, `/me I love you.`);
+    }
+    client.say(channel, '/me Poggie Woggies UwU');
+  }
+
+  //------------------------------------------------------------------------------------------
+
   // Death Clips
   if (message.toLowerCase().startsWith('!death')) {
     let input = message.split(' ')[1];
@@ -76,7 +82,10 @@ client.on('message', (channel, userstate, message, self) => {
   // Queue system
 
   if (message.toLowerCase().startsWith('!queue')) {
-    let input = message.split(' ')[1];
+    let arg1 = message.split(' ')[1];
+    let arg2 = message.split(' ')[2];
+
+    // Check for invalid/missing arguments
     if (message.split(' ').length < 2) {
       client.say(
         channel,
@@ -87,21 +96,33 @@ client.on('message', (channel, userstate, message, self) => {
 
     let mod = false;
 
-    switch (input.toLowerCase()) {
+    switch (arg1.toLowerCase()) {
+      // User join
       case 'join':
         if (!userstate.subscriber) {
           break;
         }
         Queue.push(userstate.username);
         client.say(channel, `/me @${userstate.username} added to queue.`);
+        console.log(Queue);
         break;
+
+      // List next user in queue
       case 'next':
         let next = Queue[0] ? Queue[0] : 'None';
         client.say(channel, `/me The next user in queue is: ${next}`);
         break;
-      case 'full':
-        client.say(channel, `/me The users currently in queue are: ${Queue}`);
+
+      // List entire queue
+      case 'full' || 'list':
+        if (Queue[0]) {
+          client.say(channel, `/me The users currently in queue are: ${Queue}`);
+        } else {
+          client.say(channel, `/me The are no users currently in the queue.`);
+        }
         break;
+
+      // User leaving queue
       case 'leave':
         let index = Queue.indexOf(userstate.username);
         if (index > -1) {
@@ -110,15 +131,21 @@ client.on('message', (channel, userstate, message, self) => {
             channel,
             `/me @${userstate.username}, you have been removed from the queue.`
           );
+          console.log(Queue);
         }
         break;
+
+      // MOD Ping next person in queue and remove from array
       case 'rotate':
         mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod) {
           client.say(channel, `@${Queue[0]}, you are up!`);
           Queue.shift();
+          console.log(Queue);
         }
         break;
+
+      // MOD Clear entire queue
       case 'clear':
         mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod) {
@@ -126,6 +153,32 @@ client.on('message', (channel, userstate, message, self) => {
           Queue = [];
         }
         break;
+
+      // MOD Remove user from queue
+      case 'remove':
+        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
+        if (mod && arg2) {
+          let index = Queue.indexOf(arg2);
+          if (index > -1) {
+            Queue.splice(index, 1);
+            client.say(channel, `/me ${arg2} has been removed from the queue.`);
+          } else {
+            client.say(channel, `/me Invalid argument.`);
+          }
+          console.log(Queue);
+        }
+        break;
+
+      // MOD Add user to queue
+      case 'add':
+        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
+        if (mod && arg2) {
+          Queue.push(arg2);
+          client.say(channel, `/me ${arg2} has been added to the queue.`);
+          console.log(Queue);
+        }
+        break;
+
       default:
         client.say(
           channel,
@@ -142,9 +195,14 @@ client.on('message', (channel, userstate, message, self) => {
   if (message.toLowerCase().startsWith('!russian')) {
     let input = message.split(' ')[1];
 
-    if (Revolver.length === 0 || (input && input.toLowerCase() === 'spin')) {
+    let mod = false;
+    mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
+
+    // Mod activated reset condition
+    if (Revolver.length === 0 || (input && input.toLowerCase() === 'spin' && mod)) {
       Revolver = [0, 0, 0, 0, 0, 0];
       Revolver[Math.floor(Math.random() * 6)] = 1;
+      console.log(Revolver);
       client.say(
         channel,
         `/me @${userstate.username}, the revolver has been loaded and spun.`
@@ -152,21 +210,22 @@ client.on('message', (channel, userstate, message, self) => {
       return;
     }
 
+    // Standard function
     if (message.split(' ').length < 2) {
+      // Kill condition
       if (Revolver[0] === 1) {
         Revolver.shift();
         client.say(channel, `/me @${userstate.username}, BANG!`);
-        client.timeout(channel, userstate.username, 600);
-        console.log(Revolver);
-        // reload the gun after loss
+        client.timeout(channel, userstate.username, 600, 'Russian Roulette');
+        // Reset revolver after loss
         Revolver = [0, 0, 0, 0, 0, 0];
         Revolver[Math.floor(Math.random() * 6)] = 1;
-        client.say(
-          channel,
-          `/me @${userstate.username}, the revolver has been loaded and spun.`
-        );
+        client.say(channel, `/me The revolver has been reloaded and spun.`);
+        console.log(Revolver);
         return;
       }
+
+      // Survival Condition
       if (Revolver[0] === 0) {
         Revolver.shift();
         client.say(
@@ -179,57 +238,53 @@ client.on('message', (channel, userstate, message, self) => {
     }
   }
 
+  //------------------------------------------------------------------------------------------
   /*
-  // Queue System information
-  if (message.toLowerCase() === '!queue') {
-    client.say(
-      channel,
-      `@${userstate.username}, the available options are !joinqueue, 
-      !fullqueue (lists entire queue), !nextqueue (lists next person in queue), and 
-      !leavequeue (takes you out of queue).`
-    );
-  }
+  // High Stakes Roulette
 
-  // Joining
-  if (message.toLowerCase() === '!joinqueue') {
-    Queue.push(userstate.username);
-    client.say(channel, `/me @${userstate.username} added to queue.`);
-  }
+  if (message.toLowerCase().startsWith('!highstakes')) {
+    let arg1 = message.toLowerCase().split(' ')[1];
+    let arg2 = message.toLowerCase().split(' ')[2];
 
-  // Display Full Queue
-  if (message.toLowerCase() === '!fullqueue' && Queue[0]) {
-    client.say(channel, `/me The users currently in queue are: ${Queue}`);
-  }
-
-  // Display Next Viewerr in Queue
-  if (message.toLowerCase() === '!nextqueue') {
-    let next = Queue[0] ? Queue[0] : 'None';
-    client.say(channel, `/me The next user in queue is: ${next}`);
-  }
-
-  // Let user leave queue
-  if (message.toLowerCase() === '!leavequeue' && Queue[0]) {
-    let index = Queue.indexOf(userstate.username);
-    if (index > -1) {
-      Queue.splice(index, 1);
+    if (arg1 == 'help') {
       client.say(
         channel,
-        `/me @${userstate.username}, you have been removed from the queue.`
+        `/me @${userstate.username}, High Stakes Roulette is a game of bad odds and even worse reward. Win, you get nothing. Lose, you are timed out for a MINIMUM of 30 minutes. To play, type "!highstakes <arg1> <arg2>", where arg1 is the percentage chance to lose (between 50 and 99), and arg2 is the amount of time in seconds you will be timed out if you lose (minimum 1800). Good luck out there.`
       );
+      return;
+    }
+    if (!arg2) {
+      client.say(channel, `/me Invalid argument(s). Please use "!highstakes help".`);
+      return;
+    } else {
+      // Enforce number arguments
+      if (isNaN(arg1) || isNaN(arg2)) {
+        client.say(channel, `/me Invalid argument(s). Please use "!highstakes help".`);
+        return;
+      }
+
+      // Enforce odds (>50, <100)
+      arg1 = arg1 < 50 ? 50 : arg1;
+      arg1 = arg1 >= 100 ? 99 : arg1;
+
+      // Enforce minimum timeout length
+      arg2 = arg2 < 1800 ? 1800 : arg2;
+
+      // Generate random number between 1-100
+      let result = Math.floor(Math.random() * 100) + 1;
+
+      // Compare result to odds to lose and proceed accordingly
+      if (arg1 > result) {
+        client.timeout(channel, userstate.username, arg2, 'High Stakes Roulette');
+      } else {
+        client.say(
+          channel,
+          `/me @${userstate.username}, you have survived High Stakes Roulette. Have a hug. itspaiLuv`
+        );
+      }
     }
   }
-
-  // MOD ONLY; Pull next person in queue
-  if (message.toLowerCase() === '!dequeue') {
-    let mod = false;
-    mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
-    if (mod) {
-      client.say(channel, `@${Queue[0]}, you are up!`);
-      Queue.shift();
-    }
-  }
-  */
-
+*/
   //------------------------------------------------------------------------------------------
 
   /*
