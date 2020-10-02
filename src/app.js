@@ -66,6 +66,33 @@ client.on('message', (channel, userstate, message, self) => {
 
   //------------------------------------------------------------------------------------------
 
+  // Filthy
+  if (message.toLowerCase() === '!filthy') {
+    if (userstate.username === 'filthytator') {
+      client.say(channel, `/me You're aight.`);
+    }
+    client.say(channel, '/me Fuckin pog dude POGGERS');
+  }
+
+  //------------------------------------------------------------------------------------------
+
+  // Paisley
+  if (message.toLowerCase() === '!paisley') {
+    if (userstate.username === 'paisachu') {
+      client.say(channel, `/me Fuck off, Paisley.`);
+    }
+    client.say(channel, '/me  I like to ween out the children.');
+  }
+
+  //------------------------------------------------------------------------------------------
+
+  // Simp
+  if (message.toLowerCase() === '!simp') {
+    client.say(channel, `peepoSimp peepoSimp peepoSimp peepoSimp peepoSimp`);
+  }
+
+  //------------------------------------------------------------------------------------------
+
   // Death Clips
   if (message.toLowerCase().startsWith('!death')) {
     let input = message.split(' ')[1];
@@ -114,7 +141,7 @@ client.on('message', (channel, userstate, message, self) => {
         break;
 
       // List entire queue
-      case 'full' || 'list':
+      case 'full':
         if (Queue[0]) {
           client.say(channel, `/me The users currently in queue are: ${Queue}`);
         } else {
