@@ -21,6 +21,8 @@ const options = {
   channels: [CHANNEL_NAME],
 };
 
+let queueEnable = false;
+let subOnly = true;
 let Queue = [];
 let Revolver = [];
 
@@ -35,6 +37,16 @@ client.on('message', (channel, userstate, message, self) => {
   // Hello Message
   if (message.toLowerCase() === '!whittlebot') {
     client.say(channel, `/me I hate you.`);
+  }
+
+  //------------------------------------------------------------------------------------------
+
+  // Commands
+  if (message.toLowerCase() === '!whittlebot commands') {
+    client.whisper(
+      userstate.username,
+      `WhittleBot Commands: WhittleBot, Dance, Crooked, d<##>, CoinFlip, Oxillery, Tommi, Catssnap, Filthy, Aiden, Paisley, Simp, Death <#>, Queue <Join, Leave, Full, Next, Rotate*, Add*, Remove*, Clear*, Sub*, Toggle*>, Russian [spin*]. NOTE: Commands marked with * are mod only. Commands in <> are required. Commands in [] are optional.`
+    );
   }
 
   //------------------------------------------------------------------------------------------
@@ -56,35 +68,69 @@ client.on('message', (channel, userstate, message, self) => {
 
   //------------------------------------------------------------------------------------------
 
+  // Nerd Shit pt. 1 (Dice Rolling)
+  if (message.toLowerCase().match(/!d\d+/g)) {
+    let num = Math.floor(Math.random() * parseInt(message.substring(1).substring(1)) + 1);
+    client.say(
+      channel,
+      `/me @${userstate.username} rolled a d${message
+        .substring(1)
+        .substring(1)} and got ${num}!`
+    );
+  }
+
+  if (message.toLowerCase() === '!coinflip') {
+    let num = Math.floor(Math.random() * 2 + 1);
+    if (num === 1) {
+      client.say(channel, `/me @${userstate.username} flipped a coin and got heads!`);
+    }
+    if (num === 2) {
+      client.say(channel, `/me @${userstate.username} flipped a coin and got tails!`);
+    }
+  }
+
+  //------------------------------------------------------------------------------------------
+
+  // Child
+  if (message.toLowerCase() === '!oxillery') {
+    client.say(channel, '/me Pen15');
+  }
+
+  // Tommi
+  if (message.toLowerCase() === '!tommi') {
+    client.say(channel, '/me <Starting tommi.exe>');
+  }
+
   // Catssnap
   if (message.toLowerCase() === '!catssnap') {
     if (userstate.username === 'catssnap') {
       client.say(channel, `/me I love you.`);
+    } else {
+      client.say(channel, '/me Poggie Woggies UwU');
     }
-    client.say(channel, '/me Poggie Woggies UwU');
   }
-
-  //------------------------------------------------------------------------------------------
 
   // Filthy
   if (message.toLowerCase() === '!filthy') {
     if (userstate.username === 'filthytator') {
-      client.say(channel, `/me You're aight.`);
+      client.say(channel, `/me "Vehicular manslaughter has never been so tempting."`);
+    } else {
+      client.say(channel, '/me Fuckin pog dude POGGERS');
     }
-    client.say(channel, '/me Fuckin pog dude POGGERS');
   }
 
-  //------------------------------------------------------------------------------------------
+  if (message.toLowerCase() === '!aiden') {
+    client.say(channel, '/me "How much is the fish?"');
+  }
 
   // Paisley
   if (message.toLowerCase() === '!paisley') {
     if (userstate.username === 'paisachu') {
       client.say(channel, `/me Fuck off, Paisley.`);
+    } else {
+      client.say(channel, '/me  "I like to ween out the children."');
     }
-    client.say(channel, '/me  I like to ween out the children.');
   }
-
-  //------------------------------------------------------------------------------------------
 
   // Simp
   if (message.toLowerCase() === '!simp') {
@@ -107,31 +153,58 @@ client.on('message', (channel, userstate, message, self) => {
   //------------------------------------------------------------------------------------------
 
   // Queue system
+  //let mod = false;
+  let mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
 
-  if (message.toLowerCase().startsWith('!queue')) {
+  // Enable / Disable Queue. Off by default
+  if (message.toLowerCase() === '!queue toggle' && mod) {
+    queueEnable = !queueEnable;
+    client.say(channel, `/me Queue Enabled: ${queueEnable}`);
+  }
+
+  // Enable / Disable sub only mode. Enabled by default.
+  if (message.toLowerCase() === '!queue sub' && mod) {
+    subOnly = !subOnly;
+    client.say(channel, `/me Sub Queue Mode: ${subOnly}`);
+  }
+
+  // Argument handling
+  if (message.toLowerCase().startsWith('!queue') && queueEnable) {
     let arg1 = message.split(' ')[1];
     let arg2 = message.split(' ')[2];
 
+    // Return if invocation was a setting command
+    if (
+      message.toLowerCase() === '!queue toggle' ||
+      message.toLowerCase() === '!queue sub'
+    ) {
+      return;
+    }
+
     // Check for invalid/missing arguments
     if (message.split(' ').length < 2) {
-      client.say(
-        channel,
-        `/me @${userstate.username}, valid arguments are "join", "leave", "next", "full".`
+      client.whisper(
+        userstate.username,
+        `@${userstate.username}, valid arguments are "join", "leave", "next", "full".`
       );
       return;
     }
 
-    let mod = false;
-
     switch (arg1.toLowerCase()) {
       // User join
       case 'join':
-        if (!userstate.subscriber) {
+        if (!userstate.subscriber && subOnly) {
+          client.whisper(
+            userstate.username,
+            `@${userstate.username}, only subscribers may join the queue.`
+          );
           break;
         }
         Queue.push(userstate.username);
-        client.say(channel, `/me @${userstate.username} added to queue.`);
-        console.log(Queue);
+        client.whisper(
+          userstate.username,
+          `You have been added to the queue. People ahead of you: ${Queue.length - 1}`
+        );
         break;
 
       // List next user in queue
@@ -154,65 +227,58 @@ client.on('message', (channel, userstate, message, self) => {
         let index = Queue.indexOf(userstate.username);
         if (index > -1) {
           Queue.splice(index, 1);
-          client.say(
-            channel,
-            `/me @${userstate.username}, you have been removed from the queue.`
-          );
-          console.log(Queue);
+          client.whisper(userstate.username, `You have been removed from the queue.`);
         }
         break;
 
       // MOD Ping next person in queue and remove from array
       case 'rotate':
-        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod) {
-          client.say(channel, `@${Queue[0]}, you are up!`);
-          Queue.shift();
-          console.log(Queue);
+          client.say(channel, `@${Queue.shift()}, you are up!`);
         }
         break;
 
       // MOD Clear entire queue
       case 'clear':
-        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod) {
-          client.say(channel, `/me The queue has been cleared.`);
           Queue = [];
+          client.whisper(userstate.username, `The queue has been cleared.`);
         }
         break;
 
       // MOD Remove user from queue
       case 'remove':
-        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod && arg2) {
           let index = Queue.indexOf(arg2);
           if (index > -1) {
             Queue.splice(index, 1);
-            client.say(channel, `/me ${arg2} has been removed from the queue.`);
+            client.whisper(
+              userstate.username,
+              `${arg2} has been removed from the queue.`
+            );
           } else {
-            client.say(channel, `/me Invalid argument.`);
+            client.whisper(userstate.username, `Invalid user name.`);
           }
-          console.log(Queue);
         }
         break;
 
       // MOD Add user to queue
       case 'add':
-        mod = MODS.some((mod) => userstate.username.toLowerCase().includes(mod));
         if (mod && arg2) {
           Queue.push(arg2);
-          client.say(channel, `/me ${arg2} has been added to the queue.`);
-          console.log(Queue);
+          client.whisper(userstate.username, `${arg2} has been added to the queue.`);
         }
         break;
 
       default:
-        client.say(
-          channel,
-          `/me @${userstate.username}, valid arguments are "join", "leave", "next", "full".`
+        client.whisper(
+          userstate.username,
+          `@${userstate.username}, valid arguments are "join", "leave", "next", "full".`
         );
         break;
     }
+
+    console.log(Queue);
   }
 
   //------------------------------------------------------------------------------------------
