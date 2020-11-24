@@ -45,7 +45,7 @@ client.on('message', (channel, userstate, message, self) => {
   if (message.toLowerCase() === '!whittlebot commands') {
     client.whisper(
       userstate.username,
-      `WhittleBot Commands: WhittleBot, Dance, Crooked, d<##>, CoinFlip, Oxillery, Tommi, Catssnap, Filthy, Aiden, Paisley, Simp, Death <#>, Queue <Join, Leave, Full, Next, Rotate*, Add*, Remove*, Clear*, Sub*, Toggle*>, Russian [spin*]. NOTE: Commands marked with * are mod only. Commands in <> are required. Commands in [] are optional.`
+      `WhittleBot Commands: WhittleBot, Dance, Crooked, d<##>, CoinFlip, Oxillery, Tommi, Catssnap, Filthy, Aiden, Paisley, Tia, Simp, Death <#>, Queue <Join, Leave, Full, Next, Rotate*, Add*, Remove*, Clear*, Sub*, Toggle*>, Russian [spin*]. NOTE: Commands marked with * are mod only. Commands in <> are required. Commands in [] are optional.`
     );
   }
 
@@ -129,6 +129,15 @@ client.on('message', (channel, userstate, message, self) => {
       client.say(channel, `/me Fuck off, Paisley.`);
     } else {
       client.say(channel, '/me  "I like to ween out the children."');
+    }
+  }
+
+  // Tia
+  if (message.toLowerCase() === '!tia'){
+    if(userstate.username === 'mxtiamaria'){
+      client.say(channel, `/me Hello, witch bitch!`)
+    } else {
+      client.say(channel, `/me its mental illness innit`)
     }
   }
 
