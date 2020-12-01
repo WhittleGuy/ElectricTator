@@ -96,6 +96,10 @@ client.on('message', (channel, userstate, message, self) => {
     client.say(channel, '/me "How much is the fish?"');
   }
 
+  if (message.toLowerCase() === '!dedos') {
+    client.say(channel, '/me Did you mean: "fingers"?');
+  }
+
   // Paisley
   if (message.toLowerCase() === '!paisley') {
     if (userstate.username === 'paisachu') {
