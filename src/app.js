@@ -100,6 +100,10 @@ client.on('message', (channel, userstate, message, self) => {
     client.say(channel, '/me Did you mean: "fingers"?');
   }
 
+  if (message.toLowerCase() === '!dedos') {
+    client.say(channel, `/me Yo, y'all got any feet pics? peepoShy`);
+  }
+
   // Paisley
   if (message.toLowerCase() === '!paisley') {
     if (userstate.username === 'paisachu') {
@@ -121,6 +125,10 @@ client.on('message', (channel, userstate, message, self) => {
   // Simp
   if (message.toLowerCase() === '!simp') {
     client.say(channel, `peepoSimp peepoSimp peepoSimp peepoSimp peepoSimp`);
+  }
+
+  if (message.toLowerCase() === '!horny') {
+    client.say(channel, `/me "Horny people have no rights" -@mxtiamaria`);
   }
 
   //------------------------------------------------------------------------------------------
