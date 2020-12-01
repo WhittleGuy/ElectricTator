@@ -75,7 +75,7 @@ client.on('message', (channel, userstate, message, self) => {
 
   // Catssnap
   if (message.toLowerCase() === '!catssnap') {
-    let height = Math.floor(Math.random() * 36 + 1);
+    let height = Math.random() * 36 + 1;
     if (userstate.username === 'catssnap') {
       client.say(channel, '/me Poggie Woggies UwU');
     } else {
