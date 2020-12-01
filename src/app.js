@@ -44,7 +44,7 @@ client.on('message', (channel, userstate, message, self) => {
   if (message.toLowerCase() === '!dance') {
     client.say(
       channel,
-      `blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby`
+      `pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM blobDance PepePls pepeDS Dance pepeFASTJAM `
     );
   }
 
@@ -75,10 +75,11 @@ client.on('message', (channel, userstate, message, self) => {
 
   // Catssnap
   if (message.toLowerCase() === '!catssnap') {
+    let height = Math.floor(Math.random() * 36 + 1);
     if (userstate.username === 'catssnap') {
-      client.say(channel, `/me I love you.`);
-    } else {
       client.say(channel, '/me Poggie Woggies UwU');
+    } else {
+      client.say(channel, `/me Catssnap height: ~${height} inches`);
     }
   }
 
