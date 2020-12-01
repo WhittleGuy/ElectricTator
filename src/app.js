@@ -4,7 +4,6 @@ import {
   OAUTH_TOKEN,
   CHANNEL_NAME,
   BLOCKED_WORDS,
-  DEATH_ARRAY,
   MODS,
 } from './constants';
 
@@ -35,18 +34,8 @@ client.on('message', (channel, userstate, message, self) => {
   //console.log(userstate);
 
   // Hello Message
-  if (message.toLowerCase() === '!whittlebot') {
-    client.say(channel, `/me I hate you.`);
-  }
-
-  //------------------------------------------------------------------------------------------
-
-  // Commands
-  if (message.toLowerCase() === '!whittlebot commands') {
-    client.whisper(
-      userstate.username,
-      `WhittleBot Commands: WhittleBot, Dance, Crooked, d<##>, CoinFlip, Oxillery, Tommi, Catssnap, Filthy, Aiden, Paisley, Tia, Simp, Death <#>, Queue <Join, Leave, Full, Next, Rotate*, Add*, Remove*, Clear*, Sub*, Toggle*>, Russian [spin*]. NOTE: Commands marked with * are mod only. Commands in <> are required. Commands in [] are optional.`
-    );
+  if (message.toLowerCase() === '!tator') {
+    client.say(channel, `/me Leave me alone.`);
   }
 
   //------------------------------------------------------------------------------------------
@@ -57,13 +46,6 @@ client.on('message', (channel, userstate, message, self) => {
       channel,
       `blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby pepePls Dance blobDance pepeJAMMER PartyKirby`
     );
-  }
-
-  //------------------------------------------------------------------------------------------
-
-  // Just for Rhys
-  if (message.toLowerCase() === '!crooked') {
-    client.say(channel, "/me It's fine, it's only a little crooked.");
   }
 
   //------------------------------------------------------------------------------------------
@@ -90,16 +72,6 @@ client.on('message', (channel, userstate, message, self) => {
   }
 
   //------------------------------------------------------------------------------------------
-
-  // Child
-  if (message.toLowerCase() === '!oxillery') {
-    client.say(channel, '/me Pen15');
-  }
-
-  // Tommi
-  if (message.toLowerCase() === '!tommi') {
-    client.say(channel, '/me <Starting tommi.exe>');
-  }
 
   // Catssnap
   if (message.toLowerCase() === '!catssnap') {
@@ -133,30 +105,17 @@ client.on('message', (channel, userstate, message, self) => {
   }
 
   // Tia
-  if (message.toLowerCase() === '!tia'){
-    if(userstate.username === 'mxtiamaria'){
-      client.say(channel, `/me Hello, witch bitch!`)
+  if (message.toLowerCase() === '!tia') {
+    if (userstate.username === 'mxtiamaria') {
+      client.say(channel, `/me Hello, witch bitch!`);
     } else {
-      client.say(channel, `/me its mental illness innit`)
+      client.say(channel, `/me its mental illness innit`);
     }
   }
 
   // Simp
   if (message.toLowerCase() === '!simp') {
     client.say(channel, `peepoSimp peepoSimp peepoSimp peepoSimp peepoSimp`);
-  }
-
-  //------------------------------------------------------------------------------------------
-
-  // Death Clips
-  if (message.toLowerCase().startsWith('!death')) {
-    let input = message.split(' ')[1];
-    if (message.split(' ').length < 2) {
-      return;
-    }
-    if (input > 0 && input < DEATH_ARRAY.length + 1) {
-      client.say(channel, `/me @${userstate.username}, ${DEATH_ARRAY[input - 1]}`);
-    }
   }
 
   //------------------------------------------------------------------------------------------
@@ -340,53 +299,6 @@ client.on('message', (channel, userstate, message, self) => {
     }
   }
 
-  //------------------------------------------------------------------------------------------
-  /*
-  // High Stakes Roulette
-
-  if (message.toLowerCase().startsWith('!highstakes')) {
-    let arg1 = message.toLowerCase().split(' ')[1];
-    let arg2 = message.toLowerCase().split(' ')[2];
-
-    if (arg1 == 'help') {
-      client.say(
-        channel,
-        `/me @${userstate.username}, High Stakes Roulette is a game of bad odds and even worse reward. Win, you get nothing. Lose, you are timed out for a MINIMUM of 30 minutes. To play, type "!highstakes <arg1> <arg2>", where arg1 is the percentage chance to lose (between 50 and 99), and arg2 is the amount of time in seconds you will be timed out if you lose (minimum 1800). Good luck out there.`
-      );
-      return;
-    }
-    if (!arg2) {
-      client.say(channel, `/me Invalid argument(s). Please use "!highstakes help".`);
-      return;
-    } else {
-      // Enforce number arguments
-      if (isNaN(arg1) || isNaN(arg2)) {
-        client.say(channel, `/me Invalid argument(s). Please use "!highstakes help".`);
-        return;
-      }
-
-      // Enforce odds (>50, <100)
-      arg1 = arg1 < 50 ? 50 : arg1;
-      arg1 = arg1 >= 100 ? 99 : arg1;
-
-      // Enforce minimum timeout length
-      arg2 = arg2 < 1800 ? 1800 : arg2;
-
-      // Generate random number between 1-100
-      let result = Math.floor(Math.random() * 100) + 1;
-
-      // Compare result to odds to lose and proceed accordingly
-      if (arg1 > result) {
-        client.timeout(channel, userstate.username, arg2, 'High Stakes Roulette');
-      } else {
-        client.say(
-          channel,
-          `/me @${userstate.username}, you have survived High Stakes Roulette. Have a hug. itspaiLuv`
-        );
-      }
-    }
-  }
-*/
   //------------------------------------------------------------------------------------------
 
   /*
