@@ -100,7 +100,7 @@ client.on('message', (channel, userstate, message, self) => {
     client.say(channel, '/me Did you mean: "fingers"?');
   }
 
-  if (message.toLowerCase() === '!dedos') {
+  if (message.toLowerCase() === '!julio') {
     client.say(channel, `/me Yo, y'all got any feet pics? peepoShy`);
   }
 
